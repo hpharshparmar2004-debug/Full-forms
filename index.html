@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>RGCSM Examination</title>
+
+<style>
+    body { margin: 0; font-family: Arial, sans-serif; background: #f2f2f2; }
+    #loginPage, #examPage, #resultPage {
+        max-width: 900px; margin: auto; padding: 20px; margin-top: 40px;
+        background: #fff; border-radius: 10px; box-shadow: 0 0 10px #ccc;
+    }
+    h2 { text-align:center; }
+    .hidden { display:none; }
+
+    #questionNav { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+    .qcircle {
+        width: 35px; height: 35px; border-radius: 50%; display:flex;
+        justify-content:center; align-items:center; background:red; color:#fff;
+        cursor:pointer; font-weight:bold;
+    }
+    .qcircle.attempted { background: green; }
+
+    #questionBox { font-size: 18px; font-weight: bold; margin-bottom: 10px; }
+    .optionBox { margin: 10px 0; padding: 10px; background: #f7f7f7; border-radius: 8px; }
+
+    button {
+        padding: 10px 20px; border: none; cursor: pointer; font-size: 16px;
+        border-radius: 8px; margin-right: 10px;
+    }
+    #nextBtn { background: #0f62fe; color: white; }
+    #prevBtn { background: #555; color: white; }
+    #submitBtn { background: blue; color: white; }
+
+    #timer { font-size: 20px; font-weight: bold; color: #e60000; float:right; }
+    #usernameTop { font-size: 18px; font-weight: bold; color: green; float:left; }
+</style>
+</head>
+<body>
+
+<!-- ================= LOGIN PAGE ================= -->
+<div id="loginPage">
+    <h2>RGCSM LOGIN</h2>
+    <label>Username (Format: rgcsm###)</label><br>
+    <input id="user" type="text" placeholder="rgcsm001" /><br><br>
+
+    <label>Password (###)</label><br>
+    <input id="pass" type="password" placeholder="001" /><br><br>
+
+    <button onclick="validateLogin()">Login</button>
+    <p id="loginError" style="color:red; font-weight:bold;"></p>
+</div>
+
+<!-- ================= EXAM PAGE ================= -->
+<div id="examPage" class="hidden">
+    <div>
+        <span id="usernameTop"></span>
+        <span id="timer">60:00</span>
+    </div>
+    <hr>
+    <div id="questionNav"></div>
+    <div id="questionBox"></div>
+    <div id="optionsContainer"></div>
+
+    <br>
+    <button id="prevBtn" onclick="prevQ()">Previous</button>
+    <button id="nextBtn" onclick="nextQ()">Save & Next</button>
+    <button id="submitBtn" onclick="submitExam()">Submit</button>
+</div>
+
+<!-- ================= RESULT PAGE ================= -->
+<div id="resultPage" class="hidden">
+    <h2>Thank You!</h2>
+    <h3>Your exam has been submitted.</h3>
+    <p id="scoreText"></p>
+</div>
+
+<script>
+// ================= LOGIN VALIDATION =================
+function validateLogin() {
+    const u = document.getElementById("user").value.trim();
+    const p = document.getElementById("pass").value.trim();
+
+    let validPattern = /^rgcsm(\d{3})$/;
+
+    if (!validPattern.test(u)) {
+        document.getElementById("loginError").innerText = "Invalid Login";
+        return;
+    }
+
+    const number = u.match(validPattern)[1];
+
+    if (p !== number) {
+        document.getElementById("loginError").innerText = "Invalid Login";
+        return;
+    }
+
+    document.getElementById("loginPage").classList.add("hidden");
+    document.getElementById("examPage").classList.remove("hidden");
+    document.getElementById("usernameTop").innerText = "User: " + u;
+
+    startTimer();
+    shuffleAllQuestions();
+    loadQuestion();
+}
+
+// ================= TIMER 60 MINUTES =================
+let time = 60 * 60;
+let timerInterval;
+
+function startTimer() {
+    timerInterval = setInterval(() => {
+        let m = Math.floor(time / 60);
+        let s = time % 60;
+        document.getElementById("timer").innerText =
+            `${m}:${s < 10 ? "0"+s : s}`;
+        time--;
+        if (time < 0) submitExam();
+    }, 1000);
+}
+
+// ================= RAW QUESTIONS =================
+let questions = [
+    {q:"Full form of CPU?", a:["Central Processing Unit","Control Program Utility","Central Power Unit","Common Processing Utility"], c:0},
+    {q:"Full form of RAM?", a:["Random Access Memory","Run Access Module","Read Area Memory","Remote Access Mode"], c:0},
+    {q:"Full form of ROM?", a:["Read Only Memory","Remote Output Mode","Random Output Memory","Read Once Module"], c:0},
+    {q:"Full form of BIOS?", a:["Basic Input Output System","Binary Input Output Service","Basic Internal Operating Setup","Board Input Output System"], c:0},
+    {q:"Full form of PDF?", a:["Portable Document Format","Programmed Data File","Portable Data Function","Printed Document File"], c:0},
+    {q:"Full form of USB?", a:["Universal Serial Bus","Universal Storage Base","Utility Service Bus","User Serial Base"], c:0},
+    {q:"Full form of URL?", a:["Uniform Resource Locator","Universal Reference Link","Unified Resource Link","Uniform Request Locator"], c:0},
+    {q:"Full form of HTTP?", a:["Hyper Text Transfer Protocol","High Transfer Text Protocol","Hyperlink Transmission Process","Host Transfer Text Protocol"], c:0},
+    {q:"Full form of HTTPS?", a:["Hyper Text Transfer Protocol Secure","High Transfer Text Protocol Secure","Host Transmission Process Secure","Hyper Time Transfer Protocol Secure"], c:0},
+    {q:"Full form of IP?", a:["Internet Protocol","Internet Path","Internal Program","Intermediate Process"], c:0},
+    {q:"Full form of ISP?", a:["Internet Service Provider","Internal Service Program","Interlinked Server Provider","Internet Support Protocol"], c:0},
+    {q:"Full form of LAN?", a:["Local Area Network","Logical Access Node","Long Access Network","Local Application Network"], c:0},
+    {q:"Full form of WAN?", a:["Wide Area Network","World Access Network","Wireless Area Node","Wide Application Node"], c:0},
+    {q:"Full form of MAN?", a:["Metropolitan Area Network","Master Access Node","Main Area Network","Medium Application Network"], c:0},
+    {q:"Full form of OMR?", a:["Optical Mark Recognition","Optical Machine Reader","Output Mark Reader","Online Mark Recording"], c:0},
+    {q:"Full form of OCR?", a:["Optical Character Recognition","Online Code Reader","Optical Capture Reader","Output Character Recognition"], c:0},
+    {q:"Full form of MICR?", a:["Magnetic Ink Character Recognition","Machine Input Character Reader","Magnetic Input Code Reader","Mark Ink Character Reader"], c:0},
+    {q:"Full form of GUI?", a:["Graphical User Interface","General User Interaction","Global User Input","Graphical Utility Interface"], c:0},
+    {q:"Full form of CLI?", a:["Command Line Interface","Control Line Input","Common Link Interface","Command Logic Interaction"], c:0},
+    {q:"Full form of HTML?", a:["Hyper Text Markup Language","High Transfer Markup Language","Hyperlink Text Mode Language","Host Text Markup Language"], c:0},
+    {q:"Full form of XML?", a:["Extensible Markup Language","External Mark Language","Extra Machine Language","Executable Markup Logic"], c:0},
+    {q:"Full form of SQL?", a:["Structured Query Language","Sequential Query Logic","Simple Question Language","System Query Level"], c:0},
+    {q:"Full form of OS?", a:["Operating System","Output Server","Online System","Open Software"], c:0},
+    {q:"Full form of PC?", a:["Personal Computer","Primary CPU","Private Console","Programmed Computer"], c:0},
+    {q:"Full form of VGA?", a:["Video Graphics Array","Visual Graphic Adapter","Video Game Access","Virtual Graphics Application"], c:0},
+    {q:"Full form of PSU?", a:["Power Supply Unit","Primary Storage Unit","Power System Utility","Personal System Unit"], c:0},
+    {q:"Full form of GPU?", a:["Graphics Processing Unit","General Processing Utility","Graphical Program Unit","Graphics Power Unit"], c:0},
+    {q:"Full form of CAD?", a:["Computer Aided Design","Computer Application Device","Central Access Data","Code Assisted Development"], c:0},
+    {q:"Full form of CAM?", a:["Computer Aided Manufacturing","Central Access Machine","Computer Assisted Module","Code Access Management"], c:0},
+    {q:"Full form of API?", a:["Application Programming Interface","Auto Program Interaction","Advanced Program Interface","Application Process Input"], c:0},
+    {q:"Full form of DNS?", a:["Domain Name System","Digital Network Service","Direct Name Server","Domain Network Server"], c:0},
+    {q:"Full form of SMS?", a:["Short Message Service","Single Message System","Smart Messaging System","Small Message Service"], c:0},
+    {q:"Full form of MMS?", a:["Multimedia Messaging Service","Multi Message System","Medium Media Service","Mobile Message System"], c:0},
+    {q:"Full form of SSD?", a:["Solid State Drive","Super Storage Disk","System Storage Device","Secure System Drive"], c:0},
+    {q:"Full form of HDD?", a:["Hard Disk Drive","Heavy Data Disk","High Data Device","Hard Data Drive"], c:0},
+    {q:"Full form of SMTP?", a:["Simple Mail Transfer Protocol","Secure Mail Transmission Program","Smart Mail Transfer Process","Structured Mail Transfer Protocol"], c:0},
+    {q:"Full form of POP3?", a:["Post Office Protocol 3","Primary Office Protocol","Public Operating Process","Programmed Output Protocol"], c:0},
+    {q:"Full form of IMAP?", a:["Internet Message Access Protocol","Internal Mail Access Program","Internet Mail Application Protocol","Integrated Message Access Program"], c:0},
+    {q:"Full form of DVD?", a:["Digital Versatile Disc","Digital Video Data","Direct Visual Disk","Data Video Disc"], c:0},
+    {q:"Full form of CD?", a:["Compact Disc","Central Disk","Computer Data","Control Device"], c:0},
+    {q:"Full form of DOS?", a:["Disk Operating System","Direct Operating Software","Data Output System","Digital Operating System"], c:0},
+    {q:"Full form of ERP?", a:["Enterprise Resource Planning","Extended Resource Process","Electronic Resource Program","Enterprise Record Protocol"], c:0},
+    {q:"Full form of AI?", a:["Artificial Intelligence","Automated Interface","Advanced Input","Application Intelligence"], c:0},
+    {q:"Full form of ML?", a:["Machine Learning","Markup Language","Main Logic","Micro Learning"], c:0},
+    {q:"Full form of IoT?", a:["Internet of Things","Information of Technology","Input Output Transmission","Interlink of Technology"], c:0},
+    {q:"Full form of WWW?", a:["World Wide Web","World Web Window","Wide World Web","Wide Web World"], c:0}
+];
+
+// ================= SHUFFLE OPTIONS =================
+function shuffleOptions(q) {
+    let optionList = q.a.map((option, index) => ({ option, index }));
+    optionList.sort(() => Math.random() - 0.5);
+
+    q.a = optionList.map(item => item.option);
+    q.c = optionList.findIndex(item => item.index === q.c);
+}
+
+// Shuffle all questions once at login
+function shuffleAllQuestions() {
+    questions.forEach(q => shuffleOptions(q));
+}
+
+// ================= QUIZ SYSTEM =================
+let currentQ = 0;
+let selected = Array(questions.length).fill(null);
+
+const navDiv = document.getElementById("questionNav");
+questions.forEach((_, i)=> {
+    let c = document.createElement("div");
+    c.className = "qcircle";
+    c.innerText = i+1;
+    c.onclick = ()=>{ currentQ = i; loadQuestion(); };
+    navDiv.appendChild(c);
+});
+
+function loadQuestion() {
+    const q = questions[currentQ];
+
+    document.getElementById("questionBox").innerText =
+        `Q${currentQ+1}. ${q.q}`;
+
+    const opt = document.getElementById("optionsContainer");
+    opt.innerHTML = "";
+
+    q.a.forEach((o, i)=>{
+        const div = document.createElement("div");
+        div.className = "optionBox";
+
+        div.innerHTML = `
+            <label>
+            <input type="radio" name="opt" value="${i}"
+            ${selected[currentQ]===i?"checked":""}> 
+            ${String.fromCharCode(65+i)}) ${o}
+            </label>
+        `;
+        opt.appendChild(div);
+    });
+
+    markAttempt();
+}
+
+function saveAnswer() {
+    const r = document.querySelector('input[name="opt"]:checked');
+    if (r) selected[currentQ] = parseInt(r.value);
+}
+
+function nextQ() {
+    saveAnswer();
+    if (currentQ < questions.length-1) currentQ++;
+    loadQuestion();
+}
+
+function prevQ() {
+    saveAnswer();
+    if (currentQ > 0) currentQ--;
+    loadQuestion();
+}
+
+function markAttempt() {
+    const nav = document.querySelectorAll(".qcircle");
+    nav.forEach((n, i)=>{
+        if (selected[i] !== null) n.classList.add("attempted");
+    });
+}
+
+// ================= FINAL SUBMISSION =================
+function submitExam() {
+    clearInterval(timerInterval);
+
+    saveAnswer();
+
+    let score = 0;
+    questions.forEach((q, i)=>{
+        if (selected[i] === q.c) score++;
+    });
+
+    document.getElementById("examPage").classList.add("hidden");
+    document.getElementById("resultPage").classList.remove("hidden");
+
+    document.getElementById("scoreText").innerText =
+        `Your Score: ${score} / ${questions.length}`;
+}
+</script>
+
+</body>
+</html>
