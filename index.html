@@ -3,751 +3,311 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CMD Mock Test - 50 MCQs</title>
-
+<title>Ultimate IT Quiz 100 MCQs</title>
 <style>
-
 body{
-    margin:0;
-    padding:0;
-    font-family:Arial,sans-serif;
-    background:#0f172a;
-    color:white;
+font-family:Arial, sans-serif;
+background:#f0f2f5;
+margin:0;
+padding:0;
 }
-
-.login-page,
-.quiz-page,
-.result-page{
-    display:none;
-    min-height:100vh;
-    justify-content:center;
-    align-items:center;
-    padding:20px;
+.login-box,.quiz-box,.result-box{
+width:90%;
+max-width:900px;
+margin:30px auto;
+background:#fff;
+padding:20px;
+border-radius:12px;
+box-shadow:0 0 10px rgba(0,0,0,0.2);
 }
-
-.active{
-    display:flex;
-}
-
-.card{
-    width:100%;
-    max-width:900px;
-    background:#1e293b;
-    border-radius:20px;
-    padding:25px;
-    box-shadow:0 0 20px rgba(0,0,0,0.5);
-}
-
-h1,h2,h3{
-    margin-top:0;
-}
-
 input{
-    width:100%;
-    padding:14px;
-    margin-top:10px;
-    margin-bottom:20px;
-    border:none;
-    border-radius:10px;
-    font-size:16px;
+width:100%;
+padding:12px;
+margin:10px 0;
+font-size:16px;
 }
-
 button{
-    padding:14px 20px;
-    border:none;
-    border-radius:10px;
-    background:#2563eb;
-    color:white;
-    cursor:pointer;
-    font-size:16px;
+padding:10px 20px;
+border:none;
+border-radius:8px;
+background:#007bff;
+color:white;
+font-size:16px;
+cursor:pointer;
+margin:5px;
 }
-
 button:hover{
-    background:#1d4ed8;
+background:#0056b3;
 }
-
-.topbar{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    flex-wrap:wrap;
-    gap:10px;
-    margin-bottom:20px;
-}
-
-.question-box{
-    background:#334155;
-    padding:20px;
-    border-radius:15px;
-}
-
 .option{
-    background:#475569;
-    padding:12px;
-    margin-top:12px;
-    border-radius:10px;
-    cursor:pointer;
+background:#f7f7f7;
+padding:10px;
+margin:8px 0;
+border-radius:8px;
+cursor:pointer;
+border:1px solid #ccc;
 }
-
 .option:hover{
-    background:#64748b;
+background:#e8f0ff;
 }
-
-.navigation{
-    display:flex;
-    justify-content:space-between;
-    margin-top:20px;
-    gap:10px;
+.nav{
+display:flex;
+flex-wrap:wrap;
+gap:8px;
+margin-top:20px;
 }
-
-.question-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(45px,1fr));
-    gap:10px;
-    margin-top:20px;
+.circle{
+width:35px;
+height:35px;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+background:red;
+color:white;
+font-size:14px;
+cursor:pointer;
 }
-
-.qbtn{
-    width:45px;
-    height:45px;
-    border-radius:50%;
-    border:none;
-    color:white;
-    font-weight:bold;
+.green{
+background:green !important;
 }
-
-.not-answered{
-    background:red;
-}
-
-.answered{
-    background:green;
-}
-
 #timer{
-    font-size:22px;
-    font-weight:bold;
-    color:#facc15;
+font-size:20px;
+font-weight:bold;
+color:#d60000;
+float:right;
 }
-
-.correct{
-    color:#22c55e;
+.hidden{
+display:none;
 }
-
-.wrong{
-    color:#ef4444;
-}
-
 </style>
 </head>
-
 <body>
 
-<!-- LOGIN PAGE -->
-
-<div class="login-page active" id="loginPage">
-
-<div class="card">
-
-<h1 align="center">CMD MOCK TEST</h1>
-
-<input type="text" id="username" placeholder="Username (rgcsm001)">
-
-<input type="password" id="password" placeholder="Password">
-
-<button onclick="login()">Start Exam</button>
-
-<h3 id="loginMsg" style="color:red;"></h3>
-
+<div class="login-box" id="loginBox">
+<h2 align="center">Ultimate IT Quiz Login</h2>
+<input type="text" id="username" placeholder="Enter Username (rgcsm001)">
+<input type="password" id="password" placeholder="Enter Password (001)">
+<button onclick="login()">Start Quiz</button>
+<p id="loginMsg" style="color:red"></p>
 </div>
 
-</div>
-
-<!-- QUIZ PAGE -->
-
-<div class="quiz-page" id="quizPage">
-
-<div class="card">
-
-<div class="topbar">
-
-<h2 id="studentName"></h2>
-
+<div class="quiz-box hidden" id="quizBox">
+<h2>Ultimate IT Quiz 100 MCQs</h2>
+<p><b>Candidate:</b> <span id="candidate"></span></p>
 <div id="timer">60:00</div>
-
-</div>
-
-<div class="question-box">
-
-<h3 id="questionText"></h3>
-
-<div id="optionsContainer"></div>
-
-</div>
-
-<div class="navigation">
-
+<hr>
+<h3 id="question"></h3>
+<div id="options"></div>
 <button onclick="prevQuestion()">Previous</button>
-
 <button onclick="nextQuestion()">Save & Next</button>
-
+<button onclick="submitQuiz()" style="background:blue">Submit</button>
+<div class="nav" id="nav"></div>
 </div>
 
-<div class="question-grid" id="questionGrid"></div>
-
-<button style="width:100%;margin-top:20px;background:#16a34a;"
-onclick="submitQuiz()">Submit Exam</button>
-
-</div>
-
-</div>
-
-<!-- RESULT PAGE -->
-
-<div class="result-page" id="resultPage">
-
-<div class="card">
-
-<h1 align="center">Exam Result</h1>
-
-<h2 id="finalScore"></h2>
-
-<h3 id="correctAns" class="correct"></h3>
-
-<h3 id="wrongAns" class="wrong"></h3>
-
-</div>
-
+<div class="result-box hidden" id="resultBox">
+<h2>Quiz Result</h2>
+<h3 id="score"></h3>
 </div>
 
 <script>
-
-const quizData = [
-
-{
-question:"1. Which command displays files and folders in CMD?",
-options:["DIR","CLS","TREE","COPY"],
-answer:"DIR"
-},
-
-{
-question:"2. Which command clears the screen?",
-options:["CLS","DIR","TREE","DATE"],
-answer:"CLS"
-},
-
-{
-question:"3. Which command creates a new folder?",
-options:["MD","RD","CD","DIR"],
-answer:"MD"
-},
-
-{
-question:"4. Which command changes directory?",
-options:["CD","MD","TREE","CLS"],
-answer:"CD"
-},
-
-{
-question:"5. Which command removes a directory?",
-options:["RD","MD","TREE","COPY"],
-answer:"RD"
-},
-
-{
-question:"6. Which command displays folder structure?",
-options:["TREE","DIR","CLS","DATE"],
-answer:"TREE"
-},
-
-{
-question:"7. Which command copies files?",
-options:["COPY","MOVE","DEL","REN"],
-answer:"COPY"
-},
-
-{
-question:"8. Which command deletes files?",
-options:["DEL","COPY","TREE","DIR"],
-answer:"DEL"
-},
-
-{
-question:"9. Which command renames files?",
-options:["REN","COPY","MOVE","TYPE"],
-answer:"REN"
-},
-
-{
-question:"10. Which command displays file content?",
-options:["TYPE","COPY","DIR","CLS"],
-answer:"TYPE"
-},
-
-{
-question:"11. Which command changes date?",
-options:["DATE","TIME","VOL","VER"],
-answer:"DATE"
-},
-
-{
-question:"12. Which command changes time?",
-options:["TIME","DATE","VOL","TREE"],
-answer:"TIME"
-},
-
-{
-question:"13. Which command shows Windows version?",
-options:["VER","VOL","TREE","CLS"],
-answer:"VER"
-},
-
-{
-question:"14. Which command shows disk label?",
-options:["VOL","VER","DATE","TIME"],
-answer:"VOL"
-},
-
-{
-question:"15. Which command formats disk?",
-options:["FORMAT","CHKDSK","TREE","VOL"],
-answer:"FORMAT"
-},
-
-{
-question:"16. Which command checks disk?",
-options:["CHKDSK","FORMAT","TREE","DIR"],
-answer:"CHKDSK"
-},
-
-{
-question:"17. Which command edits text files?",
-options:["EDIT","COPY","TYPE","TREE"],
-answer:"EDIT"
-},
-
-{
-question:"18. Which command moves files?",
-options:["MOVE","COPY","DEL","TYPE"],
-answer:"MOVE"
-},
-
-{
-question:"19. Which command exits CMD?",
-options:["EXIT","CLS","DIR","TREE"],
-answer:"EXIT"
-},
-
-{
-question:"20. Which command pauses output screen?",
-options:["DIR/P","DIR/W","TREE","CLS"],
-answer:"DIR/P"
-},
-
-{
-question:"21. Which command displays wide list?",
-options:["DIR/W","DIR/P","TREE","VOL"],
-answer:"DIR/W"
-},
-
-{
-question:"22. Which command shows subdirectories?",
-options:["DIR/S","DIR/W","TREE","CLS"],
-answer:"DIR/S"
-},
-
-{
-question:"23. Which command sorts by name?",
-options:["DIR/O:N","DIR/O:S","DIR/O:D","DIR/P"],
-answer:"DIR/O:N"
-},
-
-{
-question:"24. Which command sorts by size?",
-options:["DIR/O:S","DIR/O:N","DIR/O:D","TREE"],
-answer:"DIR/O:S"
-},
-
-{
-question:"25. Which command sorts by date?",
-options:["DIR/O:D","DIR/O:S","DIR/O:N","DIR/W"],
-answer:"DIR/O:D"
-},
-
-{
-question:"26. Which key saves COPY CON file?",
-options:["Ctrl + Z","Ctrl + C","Ctrl + S","Ctrl + X"],
-answer:"Ctrl + Z"
-},
-
-{
-question:"27. Which command creates file using keyboard?",
-options:["COPY CON","TYPE","EDIT","TREE"],
-answer:"COPY CON"
-},
-
-{
-question:"28. Which command goes to parent directory?",
-options:["CD..","CD\\","DIR","TREE"],
-answer:"CD.."
-},
-
-{
-question:"29. Which command goes to root directory?",
-options:["CD\\","CD..","TREE","VOL"],
-answer:"CD\\"
-},
-
-{
-question:"30. Which command changes drive?",
-options:["D:","CD D","VOL","TREE"],
-answer:"D:"
-},
-
-{
-question:"31. Which command compares files?",
-options:["COMP","COPY","MOVE","DEL"],
-answer:"COMP"
-},
-
-{
-question:"32. Which command searches text?",
-options:["FIND","TREE","TYPE","VOL"],
-answer:"FIND"
-},
-
-{
-question:"33. Which command displays memory info?",
-options:["MEM","DIR","TREE","CLS"],
-answer:"MEM"
-},
-
-{
-question:"34. Which command pauses batch execution?",
-options:["PAUSE","STOP","WAIT","BREAK"],
-answer:"PAUSE"
-},
-
-{
-question:"35. Which command changes prompt style?",
-options:["PROMPT","PATH","TREE","DIR"],
-answer:"PROMPT"
-},
-
-{
-question:"36. Which command changes file attributes?",
-options:["ATTRIB","COPY","DEL","TREE"],
-answer:"ATTRIB"
-},
-
-{
-question:"37. Which command restores deleted files?",
-options:["UNDELETE","COPY","TREE","TYPE"],
-answer:"UNDELETE"
-},
-
-{
-question:"38. Which command backs up files?",
-options:["BACKUP","COPY","DIR","TREE"],
-answer:"BACKUP"
-},
-
-{
-question:"39. Which command restores backups?",
-options:["RESTORE","BACKUP","COPY","DIR"],
-answer:"RESTORE"
-},
-
-{
-question:"40. Which command displays variables?",
-options:["SET","PATH","PROMPT","TREE"],
-answer:"SET"
-},
-
-{
-question:"41. Which command sets executable path?",
-options:["PATH","SET","TREE","CLS"],
-answer:"PATH"
-},
-
-{
-question:"42. Which command creates boot disk?",
-options:["SYS","FORMAT","TREE","CHKDSK"],
-answer:"SYS"
-},
-
-{
-question:"43. Which command shows IP configuration?",
-options:["IPCONFIG","PING","NET","TREE"],
-answer:"IPCONFIG"
-},
-
-{
-question:"44. Which command tests network connection?",
-options:["PING","DIR","TREE","CLS"],
-answer:"PING"
-},
-
-{
-question:"45. Which command maps network drive?",
-options:["NET USE","PING","DIR","VOL"],
-answer:"NET USE"
-},
-
-{
-question:"46. Which command displays help?",
-options:["HELP","DIR","TREE","CLS"],
-answer:"HELP"
-},
-
-{
-question:"47. Which command displays current path?",
-options:["CD","TREE","VOL","DATE"],
-answer:"CD"
-},
-
-{
-question:"48. Which command displays current drive?",
-options:["VOL","DIR","DATE","TREE"],
-answer:"VOL"
-},
-
-{
-question:"49. Which command is used for file listing?",
-options:["DIR","TREE","CLS","DATE"],
-answer:"DIR"
-},
-
-{
-question:"50. Which command displays complete directory hierarchy?",
-options:["TREE","DIR","CLS","VOL"],
-answer:"TREE"
-}
-
+const quiz=[
+{q:"Which software is used for basic text editing in Windows?",o:["MS Paint","Notepad","Excel","Access"],a:1},
+{q:"Which key combination is used to save a file in Notepad?",o:["Ctrl+S","Ctrl+P","Ctrl+N","Ctrl+X"],a:0},
+{q:"WordPad supports which feature that Notepad does not?",o:["Formatting","Printing","Typing","Saving"],a:0},
+{q:"Which tool in MS Paint is used to fill color in an object?",o:["Brush","Pencil","Fill with Color","Eraser"],a:2},
+{q:"Which operating system is developed by Microsoft?",o:["Linux","Windows","Ubuntu","Fedora"],a:1},
+{q:"What is the main function of an operating system?",o:["Game Playing","Manage hardware and software","Typing only","Internet only"],a:1},
+{q:"Which shortcut key is used to copy selected text?",o:["Ctrl+V","Ctrl+S","Ctrl+C","Ctrl+X"],a:2},
+{q:"Which shortcut key is used to paste content?",o:["Ctrl+V","Ctrl+P","Ctrl+O","Ctrl+L"],a:0},
+{q:"Which command is used to clear the screen in MS-DOS?",o:["CLS","DIR","DEL","COPY"],a:0},
+{q:"Which command displays files and folders in MS-DOS?",o:["TREE","COPY","DIR","TYPE"],a:2},
+{q:"Which command is used to change directory?",o:["CD","RD","DEL","REN"],a:0},
+{q:"Which command deletes a file in DOS?",o:["DEL","MD","COPY","TYPE"],a:0},
+{q:"What does CPU stand for?",o:["Central Program Unit","Central Processing Unit","Computer Primary Unit","Control Processing Unit"],a:1},
+{q:"Which memory is temporary memory?",o:["ROM","RAM","DVD","Hard Disk"],a:1},
+{q:"Which device is used to print documents?",o:["Monitor","Keyboard","Printer","Scanner"],a:2},
+{q:"Which part of a computer stores data permanently?",o:["RAM","Cache","Hard Disk","Register"],a:2},
+{q:"What is the extension of MS Word file?",o:[".xls",".ppt",".docx",".accdb"],a:2},
+{q:"Which tab in MS Word contains font settings?",o:["Insert","Home","View","Mailings"],a:1},
+{q:"Which shortcut key makes text bold in MS Word?",o:["Ctrl+B","Ctrl+U","Ctrl+I","Ctrl+E"],a:0},
+{q:"Which shortcut key underlines selected text?",o:["Ctrl+R","Ctrl+U","Ctrl+Shift","Ctrl+N"],a:1},
+{q:"Which alignment places text equally on both margins?",o:["Left","Center","Justify","Right"],a:2},
+{q:"Which option inserts page numbers in MS Word?",o:["Insert Tab","Layout Tab","Review Tab","Home Tab"],a:0},
+{q:"What is the default extension of Excel workbook?",o:[".docx",".xlsx",".pptx",".html"],a:1},
+{q:"Which symbol starts a formula in Excel?",o:["#","@","=","%"],a:2},
+{q:"Which function adds numbers in Excel?",o:["COUNT","AVERAGE","SUM","MAX"],a:2},
+{q:"Which function returns highest value?",o:["MIN","COUNT","MAX","SUM"],a:2},
+{q:"Which chart represents data in circular form?",o:["Bar Chart","Line Chart","Pie Chart","Area Chart"],a:2},
+{q:"Which cell address comes after Z1?",o:["AA1","AB1","A2","ZA1"],a:0},
+{q:"Which shortcut key edits active cell in Excel?",o:["F1","F2","F5","F9"],a:1},
+{q:"Which function counts numerical cells?",o:["COUNT","COUNTA","NOW","IF"],a:0},
+{q:"MS Access is used for?",o:["Database Management","Typing","Drawing","Coding"],a:0},
+{q:"Which object stores data in Access?",o:["Form","Report","Table","Query"],a:2},
+{q:"Which key uniquely identifies records in a table?",o:["Primary Key","Foreign Key","Candidate Key","Main Key"],a:0},
+{q:"Which object is used to search data in Access?",o:["Table","Query","Macro","Module"],a:1},
+{q:"Which object is used to print formatted output?",o:["Report","Query","Table","Macro"],a:0},
+{q:"Which software is used to create presentations?",o:["Excel","Word","PowerPoint","Access"],a:2},
+{q:"Which view shows all slides together?",o:["Normal View","Slide Sorter","Reading View","Outline View"],a:1},
+{q:"Which tab contains animation options?",o:["Design","Animations","Insert","Review"],a:1},
+{q:"Which key starts slideshow from beginning?",o:["F1","F2","F5","F7"],a:2},
+{q:"Transition effects are applied on?",o:["Text","Images","Slides","Tables"],a:2},
+{q:"HTML stands for?",o:["Hyper Text Markup Language","High Text Machine Language","Hyperlinks and Text Markup Language","Home Tool Markup Language"],a:0},
+{q:"Which HTML tag creates a paragraph?",o:["<h1>","<p>","<br>","<div>"],a:1},
+{q:"Which tag inserts an image?",o:["<img>","<image>","<pic>","<src>"],a:0},
+{q:"Which attribute specifies image path?",o:["href","src","alt","link"],a:1},
+{q:"Which tag creates a hyperlink?",o:["<a>","<link>","<href>","<url>"],a:0},
+{q:"Which HTML tag creates line break?",o:["<break>","<lb>","<br>","<hr>"],a:2},
+{q:"Which tag creates largest heading?",o:["<h6>","<head>","<h1>","<title>"],a:2},
+{q:"Which menu in Word contains spelling check?",o:["Review","Insert","Layout","Home"],a:0},
+{q:"What does GUI stand for?",o:["Graphical User Interface","General User Interface","Graphic Utility Interface","General Utility Internet"],a:0},
+{q:"Which key combination opens Task Manager?",o:["Ctrl+Alt+Del","Ctrl+S","Alt+F4","Ctrl+P"],a:0},
+{q:"Which key refreshes desktop?",o:["F2","F3","F5","F8"],a:2},
+{q:"Which option is used to rename a file?",o:["F1","F2","F4","F6"],a:1},
+{q:"Which DOS command creates a directory?",o:["CD","MD","RD","DEL"],a:1},
+{q:"Which DOS command removes a directory?",o:["RD","MD","DEL","CLS"],a:0},
+{q:"Which shortcut closes active window?",o:["Alt+F4","Ctrl+F4","Shift+F4","Alt+Tab"],a:0},
+{q:"Which shortcut switches between open apps?",o:["Ctrl+Tab","Alt+Tab","Shift+Tab","Ctrl+Alt"],a:1},
+{q:"Which feature protects Word document with password?",o:["Encrypt with Password","WordArt","Mail Merge","Track Changes"],a:0},
+{q:"Mail Merge is used for?",o:["Drawing","Sending personalized letters","Animation","Calculations"],a:1},
+{q:"Header appears at?",o:["Bottom of page","Middle of page","Top of page","Side of page"],a:2},
+{q:"Footer appears at?",o:["Top","Bottom","Left","Center"],a:1},
+{q:"Which Excel function gives average?",o:["AVG","AVERAGE","MEAN","TOTAL"],a:1},
+{q:"Which function returns current date?",o:["DATE","NOW","TODAY","TIME"],a:2},
+{q:"Which shortcut inserts current date in Excel?",o:["Ctrl+;","Ctrl+:","Ctrl+D","Alt+;"],a:0},
+{q:"Which option freezes rows in Excel?",o:["Freeze Panes","Split","Sort","Wrap Text"],a:0},
+{q:"Conditional Formatting is used for?",o:["Printing","Highlighting cells","Deleting data","Charts only"],a:1},
+{q:"Which Access object is used for user input screen?",o:["Query","Report","Form","Macro"],a:2},
+{q:"What is a record in database?",o:["Column","Field","Row of data","Chart"],a:2},
+{q:"What is a field in database?",o:["Row","Column","Graph","Slide"],a:1},
+{q:"Which PowerPoint feature adds movement?",o:["Transitions","Animations","Layouts","Themes"],a:1},
+{q:"Which tab inserts shapes in PowerPoint?",o:["Home","Insert","Review","View"],a:1},
+{q:"Which view is best for editing slides?",o:["Normal View","Reading View","Slide Show","Master View"],a:0},
+{q:"Which key runs slideshow from current slide?",o:["Shift+F5","Ctrl+F5","Alt+F5","F7"],a:0},
+{q:"Which HTML tag creates table row?",o:["<td>","<table>","<tr>","<th>"],a:2},
+{q:"Which HTML tag creates table heading?",o:["<td>","<tr>","<th>","<head>"],a:2},
+{q:"Which attribute opens link in new tab?",o:["href","new","target='_blank'","src"],a:2},
+{q:"Which HTML tag creates unordered list?",o:["<ol>","<li>","<ul>","<dl>"],a:2},
+{q:"Which HTML tag creates ordered list?",o:["<ul>","<ol>","<li>","<list>"],a:1},
+{q:"Which memory is non-volatile?",o:["RAM","Cache","ROM","Register"],a:2},
+{q:"What is booting?",o:["Formatting","Starting computer","Deleting data","Printing"],a:1},
+{q:"Which device is used to scan documents?",o:["Printer","Scanner","Monitor","Speaker"],a:1},
+{q:"Which software is system software?",o:["MS Word","Windows","Excel","Chrome"],a:1},
+{q:"Which software is application software?",o:["Linux","Windows","MS Excel","DOS"],a:2},
+{q:"Which DOS command copies files?",o:["COPY","MOVE","TREE","CHKDSK"],a:0},
+{q:"Which DOS command displays text file content?",o:["TYPE","DIR","TREE","PATH"],a:0},
+{q:"Which shortcut key cuts selected item?",o:["Ctrl+C","Ctrl+V","Ctrl+X","Ctrl+Z"],a:2},
+{q:"Which shortcut key undoes last action?",o:["Ctrl+Y","Ctrl+Z","Ctrl+R","Ctrl+T"],a:1},
+{q:"Which shortcut key redoes action?",o:["Ctrl+R","Ctrl+Y","Ctrl+Shift","Ctrl+Backspace"],a:1},
+{q:"Which feature checks grammar in Word?",o:["Spelling & Grammar","Mail Merge","Track Changes","Word Count"],a:0},
+{q:"Track Changes is useful for?",o:["Editing review","Printing","Animations","Database"],a:0},
+{q:"Which option changes page orientation?",o:["Margins","Orientation","Columns","Indent"],a:1},
+{q:"Which Excel feature arranges data alphabetically?",o:["Filter","Sort","Freeze","Merge"],a:1},
+{q:"Which Excel feature hides unwanted data?",o:["Sort","Filter","Wrap","Split"],a:1},
+{q:"Which operator is used for multiplication in Excel?",o:["x","*","#","%"],a:1},
+{q:"Which Access relationship type connects one record to many?",o:["One-to-One","Many-to-Many","One-to-Many","None"],a:2},
+{q:"Which PowerPoint tab changes slide design?",o:["Design","Insert","Home","Review"],a:0},
+{q:"Which PowerPoint feature repeats slide automatically?",o:["Loop","Wrap","AutoSave","Transition"],a:0},
+{q:"Which HTML tag contains webpage title?",o:["<meta>","<head>","<title>","<body>"],a:2},
+{q:"Which HTML section contains visible content?",o:["<body>","<head>","<title>","<style>"],a:0},
+{q:"Which browser interprets HTML code?",o:["Compiler","Web Browser","Assembler","Debugger"],a:1},
+{q:"Which protocol is used for websites?",o:["FTP","HTTP","SMTP","POP"],a:1},
+{q:"Which key opens Run dialog box?",o:["Win+R","Win+E","Ctrl+R","Alt+R"],a:0},
+{q:"Which key opens File Explorer?",o:["Win+F","Win+E","Ctrl+E","Alt+E"],a:1},
+{q:"Which shortcut locks the computer?",o:["Win+L","Ctrl+L","Alt+L","Shift+L"],a:0},
+{q:"What does BIOS stand for?",o:["Basic Input Output System","Binary Input Output System","Basic Internal Operating Setup","Boot Input Output Setup"],a:0},
+{q:"Which device is an output device?",o:["Keyboard","Mouse","Monitor","Scanner"],a:2},
+{q:"Which device is an input device?",o:["Printer","Speaker","Projector","Keyboard"],a:3},
+{q:"What is phishing?",o:["Programming","Cyber attack to steal data","Animation","Spreadsheet formula"],a:1},
+{q:"Antivirus software is used for?",o:["Gaming","Protecting computer","Drawing","Presentation"],a:1},
+{q:"Which file extension represents HTML file?",o:[".html",".docx",".xlsx",".pptx"],a:0},
+{q:"Which key is used to delete character on right side?",o:["Backspace","Delete","Insert","Home"],a:1},
+{q:"Which key combination selects all content?",o:["Ctrl+A","Ctrl+S","Ctrl+Q","Ctrl+P"],a:0}
 ];
 
-let currentQuestion = 0;
-let userAnswers = new Array(quizData.length).fill(null);
-let timeLeft = 60 * 60;
+let current=0;
+let answers=new Array(quiz.length).fill(null);
 
 function login(){
-
-let user = document.getElementById("username").value.trim();
-let pass = document.getElementById("password").value.trim();
-
-let regex = /^rgcsm\d{3}$/;
-
-if(regex.test(user)){
-
-let number = user.slice(-3);
-
-if(pass === number){
-
-document.getElementById("loginPage").classList.remove("active");
-
-document.getElementById("quizPage").classList.add("active");
-
-document.getElementById("studentName").innerHTML =
-"Candidate: " + user;
-
+let u=document.getElementById('username').value;
+let p=document.getElementById('password').value;
+let match=u.match(/^rgcsm(\d{3})$/);
+if(match && match[1]===p){
+document.getElementById('loginBox').classList.add('hidden');
+document.getElementById('quizBox').classList.remove('hidden');
+document.getElementById('candidate').innerText=u;
 loadQuestion();
-
-createQuestionGrid();
-
 startTimer();
-
 }else{
-
-document.getElementById("loginMsg").innerHTML =
-"Invalid Password";
-
+document.getElementById('loginMsg').innerText='Invalid Login';
 }
-
-}else{
-
-document.getElementById("loginMsg").innerHTML =
-"Username format should be rgcsm001";
-
-}
-
 }
 
 function loadQuestion(){
-
-const q = quizData[currentQuestion];
-
-document.getElementById("questionText").innerHTML =
-q.question;
-
-const optionsContainer =
-document.getElementById("optionsContainer");
-
-optionsContainer.innerHTML = "";
-
-q.options.forEach(option=>{
-
-const div = document.createElement("div");
-
-div.classList.add("option");
-
-div.innerHTML = `
-<label>
-<input type="radio"
-name="option"
-value="${option}"
-${userAnswers[currentQuestion]===option ? "checked" : ""}
-onchange="saveAnswer('${option}')">
-${option}
-</label>
-`;
-
-optionsContainer.appendChild(div);
-
+let q=quiz[current];
+document.getElementById('question').innerText=(current+1)+'. '+q.q;
+let options='';
+q.o.forEach((opt,i)=>{
+options+=`<div class='option' onclick='selectOption(${i})'>${opt}</div>`;
 });
-
-updateGrid();
-
+document.getElementById('options').innerHTML=options;
+updateNav();
 }
 
-function saveAnswer(answer){
-
-userAnswers[currentQuestion] = answer;
-
-updateGrid();
-
+function selectOption(i){
+answers[current]=i;
+updateNav();
 }
 
 function nextQuestion(){
-
-if(currentQuestion < quizData.length-1){
-
-currentQuestion++;
-
+if(current<quiz.length-1){
+current++;
 loadQuestion();
-
 }
-
 }
 
 function prevQuestion(){
-
-if(currentQuestion > 0){
-
-currentQuestion--;
-
+if(current>0){
+current--;
 loadQuestion();
-
+}
 }
 
+function updateNav(){
+let nav='';
+for(let i=0;i<quiz.length;i++){
+nav+=`<div class='circle ${answers[i]!=null?'green':''}' onclick='gotoQuestion(${i})'>${i+1}</div>`;
+}
+document.getElementById('nav').innerHTML=nav;
 }
 
-function createQuestionGrid(){
-
-const grid = document.getElementById("questionGrid");
-
-for(let i=0;i<quizData.length;i++){
-
-const btn = document.createElement("button");
-
-btn.innerHTML = i+1;
-
-btn.classList.add("qbtn","not-answered");
-
-btn.id = "qbtn"+i;
-
-btn.onclick = ()=>{
-
-currentQuestion = i;
-
+function gotoQuestion(i){
+current=i;
 loadQuestion();
-
-};
-
-grid.appendChild(btn);
-
-}
-
-}
-
-function updateGrid(){
-
-for(let i=0;i<quizData.length;i++){
-
-const btn = document.getElementById("qbtn"+i);
-
-if(userAnswers[i]){
-
-btn.classList.remove("not-answered");
-
-btn.classList.add("answered");
-
-}else{
-
-btn.classList.remove("answered");
-
-btn.classList.add("not-answered");
-
-}
-
-}
-
-}
-
-function startTimer(){
-
-const timer = setInterval(()=>{
-
-let minutes = Math.floor(timeLeft/60);
-
-let seconds = timeLeft%60;
-
-document.getElementById("timer").innerHTML =
-`${minutes}:${seconds<10?'0':''}${seconds}`;
-
-timeLeft--;
-
-if(timeLeft < 0){
-
-clearInterval(timer);
-
-submitQuiz();
-
-}
-
-},1000);
-
 }
 
 function submitQuiz(){
-
-let score = 0;
-
-for(let i=0;i<quizData.length;i++){
-
-if(userAnswers[i] === quizData[i].answer){
-
-score++;
-
+let score=0;
+quiz.forEach((q,i)=>{
+if(answers[i]===q.a) score++;
+});
+document.getElementById('quizBox').classList.add('hidden');
+document.getElementById('resultBox').classList.remove('hidden');
+document.getElementById('score').innerText='Your Score: '+score+' / '+quiz.length;
 }
 
+let time=3600;
+function startTimer(){
+setInterval(()=>{
+let m=Math.floor(time/60);
+let s=time%60;
+document.getElementById('timer').innerText=`${m}:${s<10?'0'+s:s}`;
+time--;
+if(time<0){
+submitQuiz();
 }
-
-document.getElementById("quizPage").classList.remove("active");
-
-document.getElementById("resultPage").classList.add("active");
-
-document.getElementById("finalScore").innerHTML =
-"Your Score: " + score + " / " + quizData.length;
-
-document.getElementById("correctAns").innerHTML =
-"Correct Answers: " + score;
-
-document.getElementById("wrongAns").innerHTML =
-"Wrong Answers: " + (quizData.length - score);
-
+},1000);
 }
-
 </script>
-
 </body>
 </html>
