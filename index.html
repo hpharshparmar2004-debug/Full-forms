@@ -248,7 +248,8 @@ let q=quiz[current];
 document.getElementById('question').innerText=(current+1)+'. '+q.q;
 let options='';
 q.o.forEach((opt,i)=>{
-options+=`<div class='option' onclick='selectOption(${i})'>${opt}</div>`;
+let selected=answers[current]===i?'☑ ':'☐ ';
+options+=`<div class='option' onclick='selectOption(${i})'>${selected}${opt}</div>`;
 });
 document.getElementById('options').innerHTML=options;
 updateNav();
