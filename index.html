@@ -3,312 +3,514 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ultimate IT Quiz 100 MCQs</title>
+<title>Computer Full Forms Quiz</title>
 <style>
 body{
-font-family:Arial, sans-serif;
-background:#f0f2f5;
-margin:0;
-padding:0;
+    font-family: Arial, sans-serif;
+    background:#f4f4f4;
+    margin:0;
+    padding:0;
 }
-.login-box,.quiz-box,.result-box{
-width:90%;
-max-width:900px;
-margin:30px auto;
-background:#fff;
-padding:20px;
-border-radius:12px;
-box-shadow:0 0 10px rgba(0,0,0,0.2);
+.container{
+    max-width:900px;
+    margin:20px auto;
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 0 10px rgba(0,0,0,0.2);
 }
-input{
-width:100%;
-padding:12px;
-margin:10px 0;
-font-size:16px;
+h1{text-align:center;}
+#timer{
+    font-size:20px;
+    color:red;
+    text-align:right;
+    margin-bottom:10px;
+}
+.question{
+    font-size:22px;
+    margin-bottom:15px;
+}
+.options label{
+    display:block;
+    background:#f0f0f0;
+    padding:10px;
+    margin:8px 0;
+    border-radius:8px;
+    cursor:pointer;
+}
+.options input{
+    margin-right:10px;
+}
+.buttons{
+    margin-top:20px;
+    display:flex;
+    justify-content:space-between;
 }
 button{
-padding:10px 20px;
-border:none;
-border-radius:8px;
-background:#007bff;
-color:white;
-font-size:16px;
-cursor:pointer;
-margin:5px;
+    padding:10px 20px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:16px;
 }
-button:hover{
-background:#0056b3;
+#nextBtn{background:#28a745;color:white;}
+#prevBtn{background:#6c757d;color:white;}
+#submitBtn{background:blue;color:white;display:none;}
+#questionNumbers{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-top:20px;
 }
-.option{
-background:#f7f7f7;
-padding:10px;
-margin:8px 0;
-border-radius:8px;
-cursor:pointer;
-border:1px solid #ccc;
+.qnum{
+    width:35px;
+    height:35px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:white;
+    background:red;
 }
-.option:hover{
-background:#e8f0ff;
+.attempted{background:green !important;}
+#result{
+    text-align:center;
+    font-size:24px;
+    margin-top:20px;
+    font-weight:bold;
 }
-.nav{
-display:flex;
-flex-wrap:wrap;
-gap:8px;
-margin-top:20px;
+.login-box{
+    max-width:400px;
+    margin:100px auto;
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 0 10px rgba(0,0,0,0.2);
 }
-.circle{
-width:35px;
-height:35px;
-border-radius:50%;
-display:flex;
-align-items:center;
-justify-content:center;
-background:red;
-color:white;
-font-size:14px;
-cursor:pointer;
+.login-box input{
+    width:100%;
+    padding:10px;
+    margin:10px 0;
 }
-.green{
-background:green !important;
+.login-box button{
+    width:100%;
+    background:#007bff;
+    color:white;
 }
-#timer{
-font-size:20px;
-font-weight:bold;
-color:#d60000;
-float:right;
-}
-.hidden{
-display:none;
+#userDisplay{
+    font-weight:bold;
+    margin-bottom:10px;
 }
 </style>
 </head>
 <body>
 
-<div class="login-box" id="loginBox">
-<h2 align="center">Ultimate IT Quiz Login</h2>
-<input type="text" id="username" placeholder="Enter Username (rgcsm001)">
-<input type="password" id="password" placeholder="Enter Password (001)">
-<button onclick="login()">Start Quiz</button>
-<p id="loginMsg" style="color:red"></p>
+<div id="loginPage" class="login-box">
+<h2>Quiz Login</h2>
+<input type="text" id="username" placeholder="Enter Username">
+<input type="password" id="password" placeholder="Enter Password">
+<button onclick="login()">Login</button>
+<p id="loginError" style="color:red;text-align:center;"></p>
 </div>
 
-<div class="quiz-box hidden" id="quizBox">
-<h2>Ultimate IT Quiz 100 MCQs</h2>
-<p><b>Candidate:</b> <span id="candidate"></span></p>
+<div class="container" id="quizContainer" style="display:none;">
+<div id="userDisplay"></div>
+<h1>Computer Full Forms Quiz</h1>
 <div id="timer">60:00</div>
-<hr>
-<h3 id="question"></h3>
-<div id="options"></div>
-<button onclick="prevQuestion()">Previous</button>
-<button onclick="nextQuestion()">Save & Next</button>
-<button onclick="submitQuiz()" style="background:blue">Submit</button>
-<div class="nav" id="nav"></div>
+<div id="quiz"></div>
+<div class="buttons">
+<button id="prevBtn" onclick="prevQuestion()">Previous</button>
+<button id="nextBtn" onclick="nextQuestion()">Save & Next</button>
+<button id="submitBtn" onclick="submitQuiz()">Submit</button>
 </div>
-
-<div class="result-box hidden" id="resultBox">
-<h2>Quiz Result</h2>
-<h3 id="score"></h3>
+<div id="questionNumbers"></div>
+<div id="result"></div>
 </div>
 
 <script>
-const quiz=[
-{q:"Which software is used for basic text editing in Windows?",o:["MS Paint","Notepad","Excel","Access"],a:1},
-{q:"Which key combination is used to save a file in Notepad?",o:["Ctrl+S","Ctrl+P","Ctrl+N","Ctrl+X"],a:0},
-{q:"WordPad supports which feature that Notepad does not?",o:["Formatting","Printing","Typing","Saving"],a:0},
-{q:"Which tool in MS Paint is used to fill color in an object?",o:["Brush","Pencil","Fill with Color","Eraser"],a:2},
-{q:"Which operating system is developed by Microsoft?",o:["Linux","Windows","Ubuntu","Fedora"],a:1},
-{q:"What is the main function of an operating system?",o:["Game Playing","Manage hardware and software","Typing only","Internet only"],a:1},
-{q:"Which shortcut key is used to copy selected text?",o:["Ctrl+V","Ctrl+S","Ctrl+C","Ctrl+X"],a:2},
-{q:"Which shortcut key is used to paste content?",o:["Ctrl+V","Ctrl+P","Ctrl+O","Ctrl+L"],a:0},
-{q:"Which command is used to clear the screen in MS-DOS?",o:["CLS","DIR","DEL","COPY"],a:0},
-{q:"Which command displays files and folders in MS-DOS?",o:["TREE","COPY","DIR","TYPE"],a:2},
-{q:"Which command is used to change directory?",o:["CD","RD","DEL","REN"],a:0},
-{q:"Which command deletes a file in DOS?",o:["DEL","MD","COPY","TYPE"],a:0},
-{q:"What does CPU stand for?",o:["Central Program Unit","Central Processing Unit","Computer Primary Unit","Control Processing Unit"],a:1},
-{q:"Which memory is temporary memory?",o:["ROM","RAM","DVD","Hard Disk"],a:1},
-{q:"Which device is used to print documents?",o:["Monitor","Keyboard","Printer","Scanner"],a:2},
-{q:"Which part of a computer stores data permanently?",o:["RAM","Cache","Hard Disk","Register"],a:2},
-{q:"What is the extension of MS Word file?",o:[".xls",".ppt",".docx",".accdb"],a:2},
-{q:"Which tab in MS Word contains font settings?",o:["Insert","Home","View","Mailings"],a:1},
-{q:"Which shortcut key makes text bold in MS Word?",o:["Ctrl+B","Ctrl+U","Ctrl+I","Ctrl+E"],a:0},
-{q:"Which shortcut key underlines selected text?",o:["Ctrl+R","Ctrl+U","Ctrl+Shift","Ctrl+N"],a:1},
-{q:"Which alignment places text equally on both margins?",o:["Left","Center","Justify","Right"],a:2},
-{q:"Which option inserts page numbers in MS Word?",o:["Insert Tab","Layout Tab","Review Tab","Home Tab"],a:0},
-{q:"What is the default extension of Excel workbook?",o:[".docx",".xlsx",".pptx",".html"],a:1},
-{q:"Which symbol starts a formula in Excel?",o:["#","@","=","%"],a:2},
-{q:"Which function adds numbers in Excel?",o:["COUNT","AVERAGE","SUM","MAX"],a:2},
-{q:"Which function returns highest value?",o:["MIN","COUNT","MAX","SUM"],a:2},
-{q:"Which chart represents data in circular form?",o:["Bar Chart","Line Chart","Pie Chart","Area Chart"],a:2},
-{q:"Which cell address comes after Z1?",o:["AA1","AB1","A2","ZA1"],a:0},
-{q:"Which shortcut key edits active cell in Excel?",o:["F1","F2","F5","F9"],a:1},
-{q:"Which function counts numerical cells?",o:["COUNT","COUNTA","NOW","IF"],a:0},
-{q:"MS Access is used for?",o:["Database Management","Typing","Drawing","Coding"],a:0},
-{q:"Which object stores data in Access?",o:["Form","Report","Table","Query"],a:2},
-{q:"Which key uniquely identifies records in a table?",o:["Primary Key","Foreign Key","Candidate Key","Main Key"],a:0},
-{q:"Which object is used to search data in Access?",o:["Table","Query","Macro","Module"],a:1},
-{q:"Which object is used to print formatted output?",o:["Report","Query","Table","Macro"],a:0},
-{q:"Which software is used to create presentations?",o:["Excel","Word","PowerPoint","Access"],a:2},
-{q:"Which view shows all slides together?",o:["Normal View","Slide Sorter","Reading View","Outline View"],a:1},
-{q:"Which tab contains animation options?",o:["Design","Animations","Insert","Review"],a:1},
-{q:"Which key starts slideshow from beginning?",o:["F1","F2","F5","F7"],a:2},
-{q:"Transition effects are applied on?",o:["Text","Images","Slides","Tables"],a:2},
-{q:"HTML stands for?",o:["Hyper Text Markup Language","High Text Machine Language","Hyperlinks and Text Markup Language","Home Tool Markup Language"],a:0},
-{q:"Which HTML tag creates a paragraph?",o:["<h1>","<p>","<br>","<div>"],a:1},
-{q:"Which tag inserts an image?",o:["<img>","<image>","<pic>","<src>"],a:0},
-{q:"Which attribute specifies image path?",o:["href","src","alt","link"],a:1},
-{q:"Which tag creates a hyperlink?",o:["<a>","<link>","<href>","<url>"],a:0},
-{q:"Which HTML tag creates line break?",o:["<break>","<lb>","<br>","<hr>"],a:2},
-{q:"Which tag creates largest heading?",o:["<h6>","<head>","<h1>","<title>"],a:2},
-{q:"Which menu in Word contains spelling check?",o:["Review","Insert","Layout","Home"],a:0},
-{q:"What does GUI stand for?",o:["Graphical User Interface","General User Interface","Graphic Utility Interface","General Utility Internet"],a:0},
-{q:"Which key combination opens Task Manager?",o:["Ctrl+Alt+Del","Ctrl+S","Alt+F4","Ctrl+P"],a:0},
-{q:"Which key refreshes desktop?",o:["F2","F3","F5","F8"],a:2},
-{q:"Which option is used to rename a file?",o:["F1","F2","F4","F6"],a:1},
-{q:"Which DOS command creates a directory?",o:["CD","MD","RD","DEL"],a:1},
-{q:"Which DOS command removes a directory?",o:["RD","MD","DEL","CLS"],a:0},
-{q:"Which shortcut closes active window?",o:["Alt+F4","Ctrl+F4","Shift+F4","Alt+Tab"],a:0},
-{q:"Which shortcut switches between open apps?",o:["Ctrl+Tab","Alt+Tab","Shift+Tab","Ctrl+Alt"],a:1},
-{q:"Which feature protects Word document with password?",o:["Encrypt with Password","WordArt","Mail Merge","Track Changes"],a:0},
-{q:"Mail Merge is used for?",o:["Drawing","Sending personalized letters","Animation","Calculations"],a:1},
-{q:"Header appears at?",o:["Bottom of page","Middle of page","Top of page","Side of page"],a:2},
-{q:"Footer appears at?",o:["Top","Bottom","Left","Center"],a:1},
-{q:"Which Excel function gives average?",o:["AVG","AVERAGE","MEAN","TOTAL"],a:1},
-{q:"Which function returns current date?",o:["DATE","NOW","TODAY","TIME"],a:2},
-{q:"Which shortcut inserts current date in Excel?",o:["Ctrl+;","Ctrl+:","Ctrl+D","Alt+;"],a:0},
-{q:"Which option freezes rows in Excel?",o:["Freeze Panes","Split","Sort","Wrap Text"],a:0},
-{q:"Conditional Formatting is used for?",o:["Printing","Highlighting cells","Deleting data","Charts only"],a:1},
-{q:"Which Access object is used for user input screen?",o:["Query","Report","Form","Macro"],a:2},
-{q:"What is a record in database?",o:["Column","Field","Row of data","Chart"],a:2},
-{q:"What is a field in database?",o:["Row","Column","Graph","Slide"],a:1},
-{q:"Which PowerPoint feature adds movement?",o:["Transitions","Animations","Layouts","Themes"],a:1},
-{q:"Which tab inserts shapes in PowerPoint?",o:["Home","Insert","Review","View"],a:1},
-{q:"Which view is best for editing slides?",o:["Normal View","Reading View","Slide Show","Master View"],a:0},
-{q:"Which key runs slideshow from current slide?",o:["Shift+F5","Ctrl+F5","Alt+F5","F7"],a:0},
-{q:"Which HTML tag creates table row?",o:["<td>","<table>","<tr>","<th>"],a:2},
-{q:"Which HTML tag creates table heading?",o:["<td>","<tr>","<th>","<head>"],a:2},
-{q:"Which attribute opens link in new tab?",o:["href","new","target='_blank'","src"],a:2},
-{q:"Which HTML tag creates unordered list?",o:["<ol>","<li>","<ul>","<dl>"],a:2},
-{q:"Which HTML tag creates ordered list?",o:["<ul>","<ol>","<li>","<list>"],a:1},
-{q:"Which memory is non-volatile?",o:["RAM","Cache","ROM","Register"],a:2},
-{q:"What is booting?",o:["Formatting","Starting computer","Deleting data","Printing"],a:1},
-{q:"Which device is used to scan documents?",o:["Printer","Scanner","Monitor","Speaker"],a:1},
-{q:"Which software is system software?",o:["MS Word","Windows","Excel","Chrome"],a:1},
-{q:"Which software is application software?",o:["Linux","Windows","MS Excel","DOS"],a:2},
-{q:"Which DOS command copies files?",o:["COPY","MOVE","TREE","CHKDSK"],a:0},
-{q:"Which DOS command displays text file content?",o:["TYPE","DIR","TREE","PATH"],a:0},
-{q:"Which shortcut key cuts selected item?",o:["Ctrl+C","Ctrl+V","Ctrl+X","Ctrl+Z"],a:2},
-{q:"Which shortcut key undoes last action?",o:["Ctrl+Y","Ctrl+Z","Ctrl+R","Ctrl+T"],a:1},
-{q:"Which shortcut key redoes action?",o:["Ctrl+R","Ctrl+Y","Ctrl+Shift","Ctrl+Backspace"],a:1},
-{q:"Which feature checks grammar in Word?",o:["Spelling & Grammar","Mail Merge","Track Changes","Word Count"],a:0},
-{q:"Track Changes is useful for?",o:["Editing review","Printing","Animations","Database"],a:0},
-{q:"Which option changes page orientation?",o:["Margins","Orientation","Columns","Indent"],a:1},
-{q:"Which Excel feature arranges data alphabetically?",o:["Filter","Sort","Freeze","Merge"],a:1},
-{q:"Which Excel feature hides unwanted data?",o:["Sort","Filter","Wrap","Split"],a:1},
-{q:"Which operator is used for multiplication in Excel?",o:["x","*","#","%"],a:1},
-{q:"Which Access relationship type connects one record to many?",o:["One-to-One","Many-to-Many","One-to-Many","None"],a:2},
-{q:"Which PowerPoint tab changes slide design?",o:["Design","Insert","Home","Review"],a:0},
-{q:"Which PowerPoint feature repeats slide automatically?",o:["Loop","Wrap","AutoSave","Transition"],a:0},
-{q:"Which HTML tag contains webpage title?",o:["<meta>","<head>","<title>","<body>"],a:2},
-{q:"Which HTML section contains visible content?",o:["<body>","<head>","<title>","<style>"],a:0},
-{q:"Which browser interprets HTML code?",o:["Compiler","Web Browser","Assembler","Debugger"],a:1},
-{q:"Which protocol is used for websites?",o:["FTP","HTTP","SMTP","POP"],a:1},
-{q:"Which key opens Run dialog box?",o:["Win+R","Win+E","Ctrl+R","Alt+R"],a:0},
-{q:"Which key opens File Explorer?",o:["Win+F","Win+E","Ctrl+E","Alt+E"],a:1},
-{q:"Which shortcut locks the computer?",o:["Win+L","Ctrl+L","Alt+L","Shift+L"],a:0},
-{q:"What does BIOS stand for?",o:["Basic Input Output System","Binary Input Output System","Basic Internal Operating Setup","Boot Input Output Setup"],a:0},
-{q:"Which device is an output device?",o:["Keyboard","Mouse","Monitor","Scanner"],a:2},
-{q:"Which device is an input device?",o:["Printer","Speaker","Projector","Keyboard"],a:3},
-{q:"What is phishing?",o:["Programming","Cyber attack to steal data","Animation","Spreadsheet formula"],a:1},
-{q:"Antivirus software is used for?",o:["Gaming","Protecting computer","Drawing","Presentation"],a:1},
-{q:"Which file extension represents HTML file?",o:[".html",".docx",".xlsx",".pptx"],a:0},
-{q:"Which key is used to delete character on right side?",o:["Backspace","Delete","Insert","Home"],a:1},
-{q:"Which key combination selects all content?",o:["Ctrl+A","Ctrl+S","Ctrl+Q","Ctrl+P"],a:0}
+const quizData = [
+{
+question:"CPU",
+options:["Central Processing Unit","Computer Processing Unit","Central Program Unit","Control Processing Unit"],
+answer:"Central Processing Unit"
+},
+{
+question:"RAM",
+options:["Random Access Memory","Read Access Memory","Run Access Memory","Rapid Access Memory"],
+answer:"Random Access Memory"
+},
+{
+question:"ROM",
+options:["Read Only Memory","Random Only Memory","Read Open Memory","Run Only Memory"],
+answer:"Read Only Memory"
+},
+{
+question:"ALU",
+options:["Arithmetic Logic Unit","Array Logic Unit","Arithmetic Local Unit","Access Logic Unit"],
+answer:"Arithmetic Logic Unit"
+},
+{
+question:"UPS",
+options:["Uninterruptible Power Supply","Universal Power Supply","United Power System","Unlimited Power Source"],
+answer:"Uninterruptible Power Supply"
+},
+{
+question:"USB",
+options:["Universal Serial Bus","United Serial Bus","Universal System Bus","Unique Serial Bus"],
+answer:"Universal Serial Bus"
+},
+{
+question:"HDD",
+options:["Hard Disk Drive","High Disk Drive","Hard Drive Disk","Heavy Disk Drive"],
+answer:"Hard Disk Drive"
+},
+{
+question:"SSD",
+options:["Solid State Drive","System State Drive","Solid Storage Device","Secure State Drive"],
+answer:"Solid State Drive"
+},
+{
+question:"LAN",
+options:["Local Area Network","Large Area Network","Local Access Network","Logical Area Network"],
+answer:"Local Area Network"
+},
+{
+question:"WAN",
+options:["Wide Area Network","World Area Network","Wireless Area Network","Wide Access Network"],
+answer:"Wide Area Network"
+},
+{
+question:"MAN",
+options:["Metropolitan Area Network","Main Area Network","Metro Access Network","Machine Area Network"],
+answer:"Metropolitan Area Network"
+},
+{
+question:"WWW",
+options:["World Wide Web","World Web Wide","Wide World Web","Web World Wide"],
+answer:"World Wide Web"
+},
+{
+question:"HTTP",
+options:["HyperText Transfer Protocol","Hyper Transfer Text Protocol","HighText Transfer Protocol","HyperText Transmission Program"],
+answer:"HyperText Transfer Protocol"
+},
+{
+question:"HTTPS",
+options:["HyperText Transfer Protocol Secure","Hyper Transfer Protocol Safe","HyperText Transfer Program Secure","HighText Transfer Protocol Secure"],
+answer:"HyperText Transfer Protocol Secure"
+},
+{
+question:"IP",
+options:["Internet Protocol","Internal Protocol","Internet Program","Integrated Protocol"],
+answer:"Internet Protocol"
+},
+{
+question:"DNS",
+options:["Domain Name System","Digital Name System","Domain Network Service","Data Name System"],
+answer:"Domain Name System"
+},
+{
+question:"URL",
+options:["Uniform Resource Locator","Universal Resource Locator","Uniform Reference Locator","United Resource Locator"],
+answer:"Uniform Resource Locator"
+},
+{
+question:"ISP",
+options:["Internet Service Provider","Internet System Provider","Internal Service Provider","Integrated System Provider"],
+answer:"Internet Service Provider"
+},
+{
+question:"OS",
+options:["Operating System","Open System","Online System","Office System"],
+answer:"Operating System"
+},
+{
+question:"GUI",
+options:["Graphical User Interface","Graphic User Internet","General User Interface","Graphical Utility Interface"],
+answer:"Graphical User Interface"
+},
+{
+question:"BIOS",
+options:["Basic Input Output System","Binary Input Output System","Basic Internal Output System","Basic Internet Operating System"],
+answer:"Basic Input Output System"
+},
+{
+question:"CMOS",
+options:["Complementary Metal Oxide Semiconductor","Computer Metal Oxide Semiconductor","Central Metal Oxide System","Complementary Machine Operating System"],
+answer:"Complementary Metal Oxide Semiconductor"
+},
+{
+question:"PDF",
+options:["Portable Document Format","Public Document Format","Printable Data File","Portable Data Format"],
+answer:"Portable Document Format"
+},
+{
+question:"JPEG",
+options:["Joint Photographic Experts Group","Joint Picture Experts Group","Java Picture Experts Group","Joint Photo Editing Group"],
+answer:"Joint Photographic Experts Group"
+},
+{
+question:"PNG",
+options:["Portable Network Graphics","Public Network Graphics","Portable New Graphics","Personal Network Graphics"],
+answer:"Portable Network Graphics"
+},
+{
+question:"GIF",
+options:["Graphics Interchange Format","Graphic Internet Format","Graphics Internal File","General Interchange Format"],
+answer:"Graphics Interchange Format"
+},
+{
+question:"AI",
+options:["Artificial Intelligence","Automatic Intelligence","Artificial Internet","Advanced Intelligence"],
+answer:"Artificial Intelligence"
+},
+{
+question:"ML",
+options:["Machine Learning","Machine Language","Memory Learning","Main Learning"],
+answer:"Machine Learning"
+},
+{
+question:"DBMS",
+options:["Database Management System","Data Backup Management System","Database Machine System","Digital Base Management System"],
+answer:"Database Management System"
+},
+{
+question:"SQL",
+options:["Structured Query Language","System Query Language","Standard Query Language","Sequential Query Language"],
+answer:"Structured Query Language"
+},
+{
+question:"HTML",
+options:["HyperText Markup Language","Hyper Transfer Markup Language","HighText Markup Language","HyperText Machine Language"],
+answer:"HyperText Markup Language"
+},
+{
+question:"CSS",
+options:["Cascading Style Sheets","Creative Style Sheets","Computer Style Sheets","Colorful Style Sheets"],
+answer:"Cascading Style Sheets"
+},
+{
+question:"XML",
+options:["Extensible Markup Language","Extended Markup Language","Extra Markup Language","Executable Markup Language"],
+answer:"Extensible Markup Language"
+},
+{
+question:"PHP",
+options:["Hypertext Preprocessor","Personal Home Page","Private Home Processor","Programming Home Page"],
+answer:"Hypertext Preprocessor"
+},
+{
+question:"VPN",
+options:["Virtual Private Network","Virtual Public Network","Verified Private Network","Visual Private Network"],
+answer:"Virtual Private Network"
+},
+{
+question:"OTP",
+options:["One Time Password","Online Time Password","One Type Password","Official Time Password"],
+answer:"One Time Password"
+},
+{
+question:"SIM",
+options:["Subscriber Identity Module","System Identity Module","Subscriber Internet Module","Secure Identity Module"],
+answer:"Subscriber Identity Module"
+},
+{
+question:"GSM",
+options:["Global System for Mobile Communication","General System for Mobile Communication","Global Service Mobile Communication","General Service Mobile Communication"],
+answer:"Global System for Mobile Communication"
+},
+{
+question:"CD",
+options:["Compact Disc","Computer Disc","Compact Drive","Central Disc"],
+answer:"Compact Disc"
+},
+{
+question:"DVD",
+options:["Digital Versatile Disc","Digital Video Disc","Data Versatile Disc","Digital Visual Drive"],
+answer:"Digital Versatile Disc"
+},
+{
+question:"OCR",
+options:["Optical Character Recognition","Optical Code Recognition","Online Character Recognition","Optical Character Reader"],
+answer:"Optical Character Recognition"
+},
+{
+question:"CAD",
+options:["Computer Aided Design","Computer Advanced Design","Creative Aided Design","Computer Automatic Design"],
+answer:"Computer Aided Design"
+},
+{
+question:"ATM",
+options:["Automated Teller Machine","Automatic Teller Machine","Advanced Teller Machine","Automated Transfer Machine"],
+answer:"Automated Teller Machine"
+},
+{
+question:"NIC",
+options:["Network Interface Card","Network Internet Card","New Interface Card","Network Internal Card"],
+answer:"Network Interface Card"
+},
+{
+question:"SMTP",
+options:["Simple Mail Transfer Protocol","Secure Mail Transfer Protocol","System Mail Transfer Protocol","Simple Message Transfer Protocol"],
+answer:"Simple Mail Transfer Protocol"
+},
+{
+question:"POP",
+options:["Post Office Protocol","Post Online Protocol","Primary Office Protocol","Public Office Protocol"],
+answer:"Post Office Protocol"
+},
+{
+question:"FTP",
+options:["File Transfer Protocol","Fast Transfer Protocol","File Transit Protocol","File Transmission Program"],
+answer:"File Transfer Protocol"
+},
+{
+question:"TCP",
+options:["Transmission Control Protocol","Transfer Control Protocol","Transmission Communication Protocol","Transfer Communication Program"],
+answer:"Transmission Control Protocol"
+},
+{
+question:"UDP",
+options:["User Datagram Protocol","Universal Datagram Protocol","User Data Protocol","Unified Datagram Program"],
+answer:"User Datagram Protocol"
+},
+{
+question:"IoT",
+options:["Internet of Things","Internet of Technology","Integration of Things","Internet of Tools"],
+answer:"Internet of Things"
+},
+{
+question:"GPS",
+options:["Global Positioning System","Global Placement System","General Positioning System","Geographic Positioning Service"],
+answer:"Global Positioning System"
+}
 ];
 
-let current=0;
-let answers=new Array(quiz.length).fill(null);
+let currentQuestion = 0;
+let score = 0;
+let answers = new Array(quizData.length).fill(null);
 
 function login(){
-let u=document.getElementById('username').value;
-let p=document.getElementById('password').value;
-let match=u.match(/^rgcsm(\d{3})$/);
-if(match && match[1]===p){
-document.getElementById('loginBox').classList.add('hidden');
-document.getElementById('quizBox').classList.remove('hidden');
-document.getElementById('candidate').innerText=u;
-loadQuestion();
-startTimer();
-}else{
-document.getElementById('loginMsg').innerText='Invalid Login';
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    const regex = /^rgcsm(\d{3})$/;
+
+    if(regex.test(username)){
+        const num = username.match(regex)[1];
+        if(password === num){
+            document.getElementById('loginPage').style.display='none';
+            document.getElementById('quizContainer').style.display='block';
+            document.getElementById('userDisplay').innerText='User: '+username;
+            loadQuestion();
+            createQuestionNumbers();
+            startTimer();
+            return;
+        }
+    }
+    document.getElementById('loginError').innerText='Invalid Login';
 }
+
+function shuffleArray(array){
+    return [...array].sort(()=>Math.random()-0.5);
 }
 
 function loadQuestion(){
-let q=quiz[current];
-document.getElementById('question').innerText=(current+1)+'. '+q.q;
-let options='';
-q.o.forEach((opt,i)=>{
-let selected=answers[current]===i?'☑ ':'☐ ';
-options+=`<div class='option' onclick='selectOption(${i})'>${selected}${opt}</div>`;
-});
-document.getElementById('options').innerHTML=options;
-updateNav();
+    const q = quizData[currentQuestion];
+    let html = `<div class="question">Q${currentQuestion+1}. What is the full form of ${q.question}?</div>`;
+    html += '<div class="options">';
+
+    if(!q.shuffledOptions){
+        q.shuffledOptions = shuffleArray(q.options);
+    }
+
+    q.shuffledOptions.forEach(option=>{
+        html += `
+        <label>
+        <input type="radio" name="option" value="${option}" ${answers[currentQuestion]===option?'checked':''}>
+        ${option}
+        </label>`;
+    });
+
+    html += '</div>';
+    document.getElementById('quiz').innerHTML = html;
+
+    document.getElementById('prevBtn').style.display = currentQuestion===0?'none':'inline-block';
+    document.getElementById('nextBtn').style.display = currentQuestion===quizData.length-1?'none':'inline-block';
+    document.getElementById('submitBtn').style.display = currentQuestion===quizData.length-1?'inline-block':'none';
 }
 
-function selectOption(i){
-answers[current]=i;
-updateNav();
+function saveAnswer(){
+    const selected = document.querySelector('input[name="option"]:checked');
+    if(selected){
+        answers[currentQuestion] = selected.value;
+        document.getElementsByClassName('qnum')[currentQuestion].classList.add('attempted');
+    }
 }
 
 function nextQuestion(){
-if(current<quiz.length-1){
-current++;
-loadQuestion();
-}
+    saveAnswer();
+    if(currentQuestion < quizData.length-1){
+        currentQuestion++;
+        loadQuestion();
+    }
 }
 
 function prevQuestion(){
-if(current>0){
-current--;
-loadQuestion();
-}
-}
-
-function updateNav(){
-let nav='';
-for(let i=0;i<quiz.length;i++){
-nav+=`<div class='circle ${answers[i]!=null?'green':''}' onclick='gotoQuestion(${i})'>${i+1}</div>`;
-}
-document.getElementById('nav').innerHTML=nav;
+    saveAnswer();
+    if(currentQuestion > 0){
+        currentQuestion--;
+        loadQuestion();
+    }
 }
 
-function gotoQuestion(i){
-current=i;
-loadQuestion();
+function createQuestionNumbers(){
+    const container = document.getElementById('questionNumbers');
+    for(let i=0;i<quizData.length;i++){
+        const div = document.createElement('div');
+        div.classList.add('qnum');
+        div.innerText=i+1;
+        div.onclick=()=>{
+            saveAnswer();
+            currentQuestion=i;
+            loadQuestion();
+        };
+        container.appendChild(div);
+    }
 }
 
 function submitQuiz(){
-let score=0;
-quiz.forEach((q,i)=>{
-if(answers[i]===q.a) score++;
-});
-document.getElementById('quizBox').classList.add('hidden');
-document.getElementById('resultBox').classList.remove('hidden');
-document.getElementById('score').innerText='Your Score: '+score+' / '+quiz.length;
+    saveAnswer();
+
+    score = 0;
+    quizData.forEach((q,index)=>{
+        if(answers[index]===q.answer){
+            score++;
+        }
+    });
+
+    document.getElementById('quiz').innerHTML='';
+    document.querySelector('.buttons').style.display='none';
+    document.getElementById('questionNumbers').style.display='none';
+    document.getElementById('result').innerHTML=`You scored ${score} out of ${quizData.length}`;
 }
 
-let time=3600;
 function startTimer(){
-setInterval(()=>{
-let m=Math.floor(time/60);
-let s=time%60;
-document.getElementById('timer').innerText=`${m}:${s<10?'0'+s:s}`;
-time--;
-if(time<0){
-submitQuiz();
-}
-},1000);
+    let time = 60*60;
+    const timer = document.getElementById('timer');
+
+    const interval = setInterval(()=>{
+        const minutes = Math.floor(time/60);
+        const seconds = time%60;
+        timer.innerText = `${minutes}:${seconds<10?'0':''}${seconds}`;
+
+        if(time<=0){
+            clearInterval(interval);
+            submitQuiz();
+        }
+        time--;
+    },1000);
 }
 </script>
+
 </body>
 </html>
